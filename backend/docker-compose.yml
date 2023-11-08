@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+  api:
+    container_name: backend.api
+    build: .
+    command : gunicorn edteam.wsgi:application --bind 0.0.0.0:3762
+    volumes:
+      - .:/usr/src/app
+      - ./static:/usr/src/app/static
+    ports:
+      - 3762:3762
+    env_file:
+      - ./.env
+  
+  nginx:
+    container_name: backend.proxy
+    build: ./nginx
+    volumes:
+      - ./static:/usr/src/app/static
+    ports:
+      - "8081:80"
+    depends_on:
+      - api
+
+volumes:
+  static_volume:
+
+
